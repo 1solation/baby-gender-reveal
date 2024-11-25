@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  #countdown {
+    font-size: 2em;
+    margin-top: 20px;
+  }
+  #reveal {
+    font-size: 2em;
+    margin-top: 50px;
+  }

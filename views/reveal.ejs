@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gender Reveal</title>
+  <link rel="stylesheet" href="/reveal.css">
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/confetti.js" defer></script>
+</head>
+<body>
+  <h1>Gender Reveal Countdown</h1>
+  <div id="countdown"></div>
+  <div id="reveal"></div>
+
+  <script>
+    const socket = io();
+    let revealTime, gender;
+
+    socket.on('update', (data) => {
+      revealTime = data.revealTime;
+      gender = data.gender;
+      startCountdown();
+    });
+
+    function startCountdown() {
+      const countdownEl = document.getElementById('countdown');
+      const revealEl = document.getElementById('reveal');
+
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = revealTime - now;
+
+        if (distance <= 0) {
+          clearInterval(timer);
+          countdownEl.innerHTML = 'It’s time!';
+          revealEl.innerHTML = `<h1 style="color: ${gender === 'boy' ? 'blue' : 'pink'}">${gender === 'boy' ? 'It’s a Boy!' : 'It’s a Girl!'}</h1>`;
+          startConfetti(gender);
+        } else {
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          countdownEl.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
